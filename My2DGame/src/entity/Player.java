@@ -2,6 +2,7 @@ package entity;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -23,6 +24,13 @@ public class Player extends Entity {
 		
 		screenX = gp.screenWidth/2 -(gp.tileSize/2);
 		screenY = gp.screenHeight/2 - (gp.tileSize/2);
+		
+		solidArea = new Rectangle(0, 0, gp.tileSize/2, gp.tileSize/2);
+		solidArea.x = 17;
+		solidArea.y = 25;
+		solidArea.width = 14;
+		solidArea.height = 20;
+		
 		setDefaultValues();
 		getPlayerImage();
 	}
@@ -58,19 +66,38 @@ public class Player extends Entity {
 		if(keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
 			if(keyH.upPressed == true) {
 				this.direction = "up";
-				this.worldY -= this.speed;
 			}
 			if(keyH.downPressed == true) {
 				this.direction = "down";
-				this.worldY += this.speed;
 			}
 			if(keyH.leftPressed == true) {
 				this.direction = "left";
-				this.worldX -= this.speed;
 			}
 			if(keyH.rightPressed == true) {
 				this.direction = "right";
-				this.worldX += this.speed;
+			}
+			
+			//check tile collision
+			collisionOn = false;
+			gp.cChecker.checkTile(this);
+			
+			//if collision is false, player can move
+			
+			if(collisionOn == false) {
+				switch(direction) {
+				case "up":
+					this.worldY -= this.speed;
+					break;
+				case "down":
+					this.worldY += this.speed;
+					break;
+				case "left":
+					this.worldX -= this.speed;
+					break;
+				case "right":
+					this.worldX += this.speed;
+					break;
+				}
 			}
 			
 			//adds walking animation
